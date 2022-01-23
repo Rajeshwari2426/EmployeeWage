@@ -12,15 +12,21 @@ namespace EmployeeWage
         {
             Console.WriteLine(" Welcome to Employee Wage Computation Program on Master Branch");
 
-            int isPresent = 1;
+            int isFullTime = 1;
+            int isPartTime = 2;
             int empRatePerHr = 20;
             int empHrs = 0, empWage = 0;
             Random random= new Random();
-            int empCheck = random.Next(0, 2);
-            if (empCheck == isPresent)
+            int empCheck = random.Next(0, 3);
+            if (empCheck == isFullTime)
             {
-                Console.WriteLine("Employee is present");
+                Console.WriteLine("Employee is present FullTime ");
                 empHrs = 8;
+            }
+            else if (empCheck == isPartTime)
+            {
+                Console.WriteLine("Employee is present PartTime");
+                empHrs = 4;
             }
             else
             {
