@@ -14,24 +14,31 @@ namespace EmployeeWage
 
             const int isFullTime = 1;
             const int isPartTime = 2;
-            int empRatePerHr = 20;
-            int empHrs = 0, empWage = 0;
-            Random random= new Random();
-            int empCheck = random.Next(0, 3);
-           switch (empCheck)
+            const int empRatePerHr = 20;
+            const int numOfWorkingDays = 20;
+            int empHrs = 0, empWage = 0,monthlyWage=0;
+
+            for (int day = 0; day < numOfWorkingDays; day++)
             {
-                case isFullTime:
-                    empHrs = 8;
-                    break;
+                Random random = new Random();
+                int empCheck = random.Next(0, 3);
+                switch (empCheck)
+                {
+                    case isFullTime:
+                        empHrs = 8;
+                        break;
                     case isPartTime:
-                    empHrs = 4;
-                    break;
+                        empHrs = 4;
+                        break;
                     default:
-                    empHrs = 0;
-                    break;
+                        empHrs = 0;
+                        break;
+                }
+                empWage = empHrs * empRatePerHr;
+                monthlyWage += empWage;
+                Console.WriteLine("Employee wage  is : " + empWage);
             }
-            empWage = empHrs * empRatePerHr;
-            Console.WriteLine("Employee wage is : " + empWage);
+            Console.WriteLine("monthly wage is :" + monthlyWage);
             Console.ReadLine();
         }
     }
