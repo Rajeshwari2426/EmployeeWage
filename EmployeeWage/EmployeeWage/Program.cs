@@ -8,21 +8,18 @@ namespace EmployeeWage
 {
     internal class Program
     {
-        static void Main(string[] args)
+        const int isFullTime = 1;
+        const int isPartTime = 2;
+        const int empRatePerHr = 20;
+        const int numOfWorkingDays = 20;
+        const int maxHrsInMonth = 100;
+        int empHrs = 0, empWage = 0, totalEmpHrs = 0, totalWorkingDays = 0, monthlyWage = 0;
+        Random random = new Random();
+        public void employeeWage()
         {
-            Console.WriteLine(" Welcome to Employee Wage Computation Program on Master Branch");
-
-            const int isFullTime = 1;
-            const int isPartTime = 2;
-            const int empRatePerHr = 20;
-            const int numOfWorkingDays = 20;
-            const int maxHrsInMonth= 100;
-            int empHrs = 0, empWage = 0,totalEmpHrs=0,totalWorkingDays=0,monthlyWage=0;
-
-            while( totalEmpHrs <= maxHrsInMonth &&totalWorkingDays<numOfWorkingDays )
+            while (totalEmpHrs <= maxHrsInMonth && totalWorkingDays < numOfWorkingDays)
             {
                 totalWorkingDays++;
-                Random random = new Random();
                 int empCheck = random.Next(0, 3);
                 switch (empCheck)
                 {
@@ -41,6 +38,13 @@ namespace EmployeeWage
             }
             monthlyWage = totalEmpHrs * empRatePerHr;
             Console.WriteLine("monthly wage is :" + monthlyWage);
+            Console.ReadLine();
+        }
+
+        static void Main(string[] args)
+        {
+            Program employee = new Program();
+            employee.employeeWage();
             Console.ReadLine();
         }
     }
