@@ -6,27 +6,38 @@ using System.Threading.Tasks;
 
 namespace EmployeeWage
 {
-    public class Program
+    public class EmpWageBuilderArray
     {
         const int isFullTime = 1;
         const int isPartTime = 2;
-        int empRatePerHr;
-        int maxHrsInMonth=100;
-        int numOfWorkingDays=20;
-        string company;
-        int empHrs = 0, totalEmpHrs = 0, totalWorkingDays =0, monthlyWage = 0;
-        Random random = new Random();
-        public Program(string company, int empRatePerHr, int numOfWorkingDays, int maxHrsInMonth)
+
+        private int numOfCompanies = 0;
+        private CompanyEmpWage[] companyEmpWageArray;
+       public EmpWageBuilderArray()
         {
-            this.company = company;
-            this.empRatePerHr = empRatePerHr;
-            this.numOfWorkingDays = numOfWorkingDays;
-            this.maxHrsInMonth = maxHrsInMonth;
+            this.companyEmpWageArray = new CompanyEmpWage[5];
+        }
+        public void addCompanyEmpWage(string company,int empRatePerHr, int numOWorkingDays,int maxHrsInMonth)
+        {
+            companyEmpWageArray[this.numOfCompanies] = new CompanyEmpWage(company, empRatePerHr, numOWorkingDays, maxHrsInMonth);
+            numOfCompanies++;
+        }
+        public void ComputeEmpWage()
+        {
+            for (int i=0;i<numOfCompanies;i++)
+            {
+                companyEmpWageArray[i].setTotalEmpWage(this.ComputeEmpWage(this.companyEmpWageArray[i]));
+                Console.WriteLine(this.companyEmpWageArray[i].toString());
+            }
+
         }
 
-        public void EmployeeWages()
+        private int ComputeEmpWage(CompanyEmpWage companyEmpWage)
         {
-            while (totalEmpHrs <=this. maxHrsInMonth && totalWorkingDays < this. numOfWorkingDays)
+            int empHrs = 0, totalEmpHrs = 0, totalWorkingDays = 0;
+            Random random = new Random();
+
+            while (totalEmpHrs <= companyEmpWage.maxHrsInMonth && totalWorkingDays < companyEmpWage.numOfWorkingDays)
             {
                 totalWorkingDays++;
                 int empCheck = random.Next(0, 3);
@@ -46,25 +57,40 @@ namespace EmployeeWage
                 Console.WriteLine("Day#:" + totalWorkingDays + "Employee hours :" + empHrs);
             }
 
-            monthlyWage = totalEmpHrs * empRatePerHr;                    
-
+            return totalEmpHrs * companyEmpWage.empRatePerHr;
+        }
+    }
+    public class CompanyEmpWage
+    {
+        public string company;
+        public int empRatePerHr;
+        public int numOfWorkingDays;
+        public int maxHrsInMonth;
+        public int totalEmpWage;
+        public CompanyEmpWage(string company,int empRAtePerHr,int numOfWorkingDays,int maxWorkingHrsInMonth)
+        {
+            this.company = company;
+            this.empRatePerHr=empRAtePerHr;
+            this.numOfWorkingDays=numOfWorkingDays;
+            this.maxHrsInMonth=maxWorkingHrsInMonth;
+        }
+        public void setTotalEmpWage(int totalEmpWage)
+        {
+            this.totalEmpWage = totalEmpWage;
         }
         public string toString()
         {
-            return ($"monthly wage for {company}is: { monthlyWage}");
+            return ($"monthly wage for {this.company}is: {this.totalEmpWage}");
         }
     }
-     class Emp
+     class Program
      {
            static void Main(string[] args)
            {
-              Program TCS = new Program("Tcs", 20, 18, 100);
-               TCS.EmployeeWages();
-            Console.WriteLine(TCS.toString());
-
-               Program INFOSYS = new Program("INFOSYS", 30, 18, 100);
-               INFOSYS.EmployeeWages();
-            Console.WriteLine(INFOSYS.toString());
+              EmpWageBuilderArray empWageBuilder=new EmpWageBuilderArray();
+            empWageBuilder.addCompanyEmpWage("INFOSYS", 20, 18, 10);
+            empWageBuilder.addCompanyEmpWage("IBM", 10,16, 20);
+            empWageBuilder.ComputeEmpWage();
                 Console.ReadLine();
            }
      }
