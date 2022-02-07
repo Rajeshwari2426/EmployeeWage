@@ -10,12 +10,11 @@ namespace EmployeeWage
     {
         const int isFullTime = 1;
         const int isPartTime = 2;
-        const int empRatePerHr = 20;
-        const int numOfWorkingDays = 20;
-        const int maxHrsInMonth = 100;
-        int empHrs = 0, empWage = 0, totalEmpHrs = 0, totalWorkingDays = 0, monthlyWage = 0;
+       
+        int empHrs = 0,  totalEmpHrs = 0, totalWorkingDays = 0, monthlyWage = 0;
         Random random = new Random();
-        public void employeeWage()
+
+        public int EmployeeWages(string company, int empRatePerHr, int numOfWorkingDays, int maxHrsInMonth)
         {
             while (totalEmpHrs <= maxHrsInMonth && totalWorkingDays < numOfWorkingDays)
             {
@@ -36,16 +35,19 @@ namespace EmployeeWage
                 totalEmpHrs += empHrs;
                 Console.WriteLine("Day#:" + totalWorkingDays + "Employee hours :" + empHrs);
             }
+           // return monthlyWage;
             monthlyWage = totalEmpHrs * empRatePerHr;
-            Console.WriteLine("monthly wage is :" + monthlyWage);
-            Console.ReadLine();
+            Console.WriteLine($"monthly wage for {company}is: { monthlyWage}");
+            return monthlyWage;
+            
         }
-
-        static void Main(string[] args)
-        {
+         static void Main(string[] args)
+         {
             Program employee = new Program();
-            employee.employeeWage();
+            employee.EmployeeWages("Tcs", 20, 18, 100);            
+            employee.EmployeeWages("Accenture", 22, 22, 80);
+            employee.EmployeeWages("IBM", 50, 15, 100);
             Console.ReadLine();
-        }
+         }
     }
 }
