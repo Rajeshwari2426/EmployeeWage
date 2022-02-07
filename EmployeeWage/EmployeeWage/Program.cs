@@ -6,17 +6,27 @@ using System.Threading.Tasks;
 
 namespace EmployeeWage
 {
-    internal class Program
+    public class Program
     {
         const int isFullTime = 1;
         const int isPartTime = 2;
-       
-        int empHrs = 0,  totalEmpHrs = 0, totalWorkingDays = 0, monthlyWage = 0;
+        int empRatePerHr;
+        int maxHrsInMonth=100;
+        int numOfWorkingDays=20;
+        string company;
+        int empHrs = 0, totalEmpHrs = 0, totalWorkingDays =0, monthlyWage = 0;
         Random random = new Random();
-
-        public int EmployeeWages(string company, int empRatePerHr, int numOfWorkingDays, int maxHrsInMonth)
+        public Program(string company, int empRatePerHr, int numOfWorkingDays, int maxHrsInMonth)
         {
-            while (totalEmpHrs <= maxHrsInMonth && totalWorkingDays < numOfWorkingDays)
+            this.company = company;
+            this.empRatePerHr = empRatePerHr;
+            this.numOfWorkingDays = numOfWorkingDays;
+            this.maxHrsInMonth = maxHrsInMonth;
+        }
+
+        public void EmployeeWages()
+        {
+            while (totalEmpHrs <=this. maxHrsInMonth && totalWorkingDays < this. numOfWorkingDays)
             {
                 totalWorkingDays++;
                 int empCheck = random.Next(0, 3);
@@ -35,19 +45,28 @@ namespace EmployeeWage
                 totalEmpHrs += empHrs;
                 Console.WriteLine("Day#:" + totalWorkingDays + "Employee hours :" + empHrs);
             }
-           // return monthlyWage;
-            monthlyWage = totalEmpHrs * empRatePerHr;
-            Console.WriteLine($"monthly wage for {company}is: { monthlyWage}");
-            return monthlyWage;
-            
+
+            monthlyWage = totalEmpHrs * empRatePerHr;                    
+
         }
-         static void Main(string[] args)
-         {
-            Program employee = new Program();
-            employee.EmployeeWages("Tcs", 20, 18, 100);            
-            employee.EmployeeWages("Accenture", 22, 22, 80);
-            employee.EmployeeWages("IBM", 50, 15, 100);
-            Console.ReadLine();
-         }
+        public string toString()
+        {
+            return ($"monthly wage for {company}is: { monthlyWage}");
+        }
     }
+     class Emp
+     {
+           static void Main(string[] args)
+           {
+              Program TCS = new Program("Tcs", 20, 18, 100);
+               TCS.EmployeeWages();
+            Console.WriteLine(TCS.toString());
+
+               Program INFOSYS = new Program("INFOSYS", 30, 18, 100);
+               INFOSYS.EmployeeWages();
+            Console.WriteLine(INFOSYS.toString());
+                Console.ReadLine();
+           }
+     }
+    
 }
