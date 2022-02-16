@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EmployeeWage;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,126 +7,119 @@ using System.Threading.Tasks;
 
 namespace EmployeeWage
 {
-    public class CalculateEmpWage
+    public interface IComputeEmpWage
     {
-        //Constant Variables.
-        const int FULL_TIME = 1;
-        const int PART_TIME = 2;
-        public int dailyWage = 0;
-        //static variable
-        public static int empHrs;
-        //Use of List and Dictionary 
-        public IList<EmpWage> CompanyEmpWge = new List<EmpWage>();
-        public IDictionary<string, EmpWage> employees = new Dictionary<string, EmpWage>();
+        //Interface
+        void addCompanyEmpWage(string company, int empRatePerHr, int numOfWorkingDays, int maxHrsPerMonth);
+         void computeEmpWage();
+         int getTotalWage(string company);
 
-        public void AddCompany(string company, int wagePrHrs, int totalWorkHrs, int totalWorkDay)
-        {
-            //creating obj of EmpWage and passing constructor values
-            EmpWage empWage = new EmpWage(company, wagePrHrs, totalWorkHrs, totalWorkDay);
-            CompanyEmpWge.Add(empWage);       // Adding data in list
-            employees.Add(company, empWage);  // Adding data in Dictionary as key value Pair
-
-        }
-         /// Gets the wage for each key
-        public void GetWage()
-        {
-            //loop to get and set total wage for each List index
-            foreach (EmpWage empWage in this.CompanyEmpWge)
-            {
-                empWage.SetTotalWage(WageCompute(empWage));
-            }
-        }
-
-        // method to perform Employee Wage Computation program using parameters.
-        public int WageCompute(EmpWage emp)
-        {
-            //Local Variables
-            int totalWage = 0;
-            int totalEmpWrkHr = 0;
-            int totalEmpwrkDay = 1;
-
-            //Creating Object of Random Class
-            Random randomNum = new Random();
-
-            //Checking condition.           
-            while (totalEmpWrkHr <= emp.totalWorkHrs && totalEmpwrkDay <= emp.totalWorkDay)
-            {
-                int empCheck = randomNum.Next(0, 3);     //generating random number from 0 to 2.
-                GetEmpHrs(empCheck);                    //calling static method to get Emp hrs.
-                dailyWage = empHrs * emp.wagePrHrs;
-                totalWage = totalEmpWrkHr * emp.wagePrHrs;
-                totalEmpWrkHr = empHrs + totalEmpWrkHr;      //Computing Total Work Hrs of Employee Day wise.
-                totalEmpwrkDay++;                           //incrementing Number of Day Worked.
-            }
-            Console.WriteLine("Daily Wage:" + dailyWage);           //Daily Wage
-            Console.WriteLine("Total Wage:" + totalWage);          //Total Wage 
-            return totalWage;
-        }
-
-        //Method to Get Employee work hours.
-        public static void GetEmpHrs(int empCheck)
-        {
-            switch (empCheck)       //passing random number into switch to get employee work hours.
-            {
-                case FULL_TIME:
-                    empHrs = 8;
-                    break;
-                case PART_TIME:
-                    empHrs = 4;
-                    break;
-                default:
-                    empHrs = 0;
-                    break;
-            }
-        }
     }
-    public class EmpWage
+    public class CompanyEmpWage
     {
-        //Instance variables.
         public string company;
-        public int wagePrHrs, totalWorkHrs, totalWorkDay, totalWage;
-
-        //Constructor to set value for each object.
-        public EmpWage(string company, int wagePrHrs, int totalWorkHrs, int totalWorkDay)
+        public int empRatePerHr;
+        public int numOfWorkingDays, maxHrsPerMonth, totalEmpWage;
+        public CompanyEmpWage(string company, int empRatePerHr, int numOfWorkingDays, int maxHrsPerMonth)
         {
             this.company = company;
-            this.wagePrHrs = wagePrHrs;
-            this.totalWorkHrs = totalWorkHrs;
-            this.totalWorkDay = totalWorkDay;
+            this.empRatePerHr = empRatePerHr;
+            this.numOfWorkingDays = numOfWorkingDays;
+            this.maxHrsPerMonth = maxHrsPerMonth;
+            this.totalEmpWage = 0;
         }
-
-        //Method to set Total Wage of a Company.
-        public void SetTotalWage(int totalWage)
+        public void setTotalEmpWage(int totalEmpWage)
         {
-            this.totalWage = totalWage;
+            this.totalEmpWage = totalEmpWage;
         }
         public string toString()
         {
-            return "Total Wage of a Company: " + this.company + " is " + this.totalWage;
+            return "Total emp wage for company :" + this.company + "is :" + this.totalEmpWage;
         }
     }
-    public interface IEmpWageComputation
+    public class EmpWageBuilder //: IComputeEmpWage
     {
-        //Interface
-        void AddCompany(string company, int wagePrHrs, int totalWorkHrs, int totalWorkDay);
-        void GetWage();
+        //Constant Variables.
+        const int Is_FULL_TIME = 1;
+        const int Is_PART_TIME = 2;
 
+        //Use of List and Dictionary 
+        public LinkedList<CompanyEmpWage> companyEmpWageList;
+        public Dictionary<string, CompanyEmpWage> companyToEmpWageMap;
+
+        public EmpWageBuilder()
+        {
+            this.companyEmpWageList = new LinkedList<CompanyEmpWage>();
+            this.companyToEmpWageMap = new Dictionary<string, CompanyEmpWage>();
+        }
+
+        public void addCompanyEmpWage(string company, int empRatePerHr, int numOfWorkingDays, int maxHrsPerMonth)
+        {
+            //creating obj of EmpWage and passing constructor values
+            CompanyEmpWage companyEmpWage = new CompanyEmpWage(company, empRatePerHr, numOfWorkingDays, maxHrsPerMonth);
+            this.companyEmpWageList.AddLast(companyEmpWage);       // Adding data in list
+            this.companyToEmpWageMap.Add(company, companyEmpWage);  // Adding data in Dictionary as key value Pair
+
+        }
+        /// Gets the wage for each key
+        public void computeEmpWage()
+        {
+            //loop to get and set total wage for each List index
+            foreach (CompanyEmpWage companyEmpWage in this.companyEmpWageList)
+            {
+                companyEmpWage.setTotalEmpWage(this.ComputeEmpWage(companyEmpWage));
+                Console.WriteLine(companyEmpWage.toString());
+            }
+        }
+        public int ComputeEmpWage(CompanyEmpWage companyEmpWage)
+        {
+            int empHrs = 0, totalEmpHrs = 0, totalWorkingDays = 0;
+            Random random = new Random();
+
+            while (totalEmpHrs <= companyEmpWage.maxHrsPerMonth && totalWorkingDays < companyEmpWage.numOfWorkingDays)
+            {
+                totalWorkingDays++;
+                int empCheck = random.Next(0, 3);
+                switch (empCheck)
+                {
+                    case Is_FULL_TIME:
+                        empHrs = 8;
+                        break;
+                    case Is_PART_TIME:
+                        empHrs = 4;
+                        break;
+                    default:
+                        empHrs = 0;
+                        break;
+                }
+                totalEmpHrs += empHrs;
+                Console.WriteLine("Day#:" + totalWorkingDays + "Employee hours :" + empHrs);
+            }
+
+            return totalEmpHrs * companyEmpWage.empRatePerHr;
+        }
+
+        public int GetTotalWage(string company)
+        {
+            return this.companyToEmpWageMap[company].totalEmpWage;
+        }
     }
-    public class Program
-    {
-        static void Main(string[] args)
-        {          
+   
+}
+class Program
+{
+  static void Main(string[] args)
+  {          
             //printing message on console
-            Console.WriteLine("Welcome To Employee Wage Computation Program \n");
-
-            //Creating Object for each company and passing value to constructor.
-            CalculateEmpWage company = new CalculateEmpWage();
-            company.AddCompany("Dmart", 30, 120, 25);
-            company.AddCompany("Reliance", 25, 125, 24);
-            company.AddCompany("Amazon", 40, 110, 22);
-            company.GetWage();
-            Console.ReadLine();
-        }
-    }
+    Console.WriteLine("Welcome To Employee Wage Computation Program \n");
+        //Creating Object for each company and passing value to constructor.
+        EmpWageBuilder empWageBuilder = new EmpWageBuilder();
+        empWageBuilder.addCompanyEmpWage("IBM",20,2,10);
+        empWageBuilder.addCompanyEmpWage("INFOSYS", 10, 4, 20);
+        empWageBuilder.computeEmpWage();
+        Console.WriteLine("Total wage for IBM company :"  +empWageBuilder.GetTotalWage("IBM"));
+        Console.ReadLine();      
+  }
 
 }
+
